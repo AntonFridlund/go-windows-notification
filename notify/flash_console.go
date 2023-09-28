@@ -9,3 +9,10 @@ type flashInfo struct {
 	uCount    uint32         // Number of flashes
 	dwTimeout uint32         // Duration of each flash
 }
+
+var (
+	user32           = syscall.NewLazyDLL("user32.dll")
+	flashWindowEx    = user32.NewProc("FlashWindowEx")
+	kernel32         = syscall.NewLazyDLL("kernel32.dll")
+	getConsoleWindow = kernel32.NewProc("GetConsoleWindow")
+)
