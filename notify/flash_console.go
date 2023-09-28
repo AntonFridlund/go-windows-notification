@@ -16,3 +16,16 @@ var (
 	kernel32         = syscall.NewLazyDLL("kernel32.dll")
 	getConsoleWindow = kernel32.NewProc("GetConsoleWindow")
 )
+
+// Checks for error before getting the current window handle
+// Does error checking based on primary return value as per instructions
+func getWindowHandle() (uintptr, error) {
+	if err := getConsoleWindow.Find(); err != nil {
+		return 0, err
+	}
+	handle, _, err := getConsoleWindow.Call()
+	if handle == 0 {
+		return 0, err
+	}
+	return handle, nil
+}
