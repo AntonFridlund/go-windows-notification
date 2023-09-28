@@ -45,3 +45,27 @@ func flashConsoleWindow(info flashInfo) error {
 	}
 	return nil
 }
+
+// Flashes the current console window
+// Window flashes three times and is then highlighted
+// Effect ends when the window recieves focus
+func FlashConsoleWindow() error {
+	handle, err := getWindowHandle()
+	if err != nil {
+		return err
+	}
+
+	info := flashInfo{
+		cbSize:    uint32(unsafe.Sizeof(flashInfo{})),
+		hwnd:      syscall.Handle(handle),
+		dwFlags:   3 | 12,
+		uCount:    3,
+		dwTimeout: 0,
+	}
+
+	err = flashConsoleWindow(info)
+	if err != nil {
+		return err
+	}
+	return nil
+}
