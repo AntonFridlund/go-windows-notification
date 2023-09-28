@@ -1,6 +1,9 @@
 package notify
 
-import "syscall"
+import (
+	"syscall"
+	"unsafe"
+)
 
 type flashInfo struct {
 	cbSize    uint32         // Size of structure
@@ -28,4 +31,17 @@ func getWindowHandle() (uintptr, error) {
 		return 0, err
 	}
 	return handle, nil
+}
+
+// Checks for error before flashing the console window
+// Does error checking based on primary return value as per instructions
+func flashConsoleWindow(info flashInfo) error {
+	if err := flashWindowEx.Find(); err != nil {
+		return err
+	}
+	r1, _, err := flashWindowEx.Call(uintptr(unsafe.Pointer(&info)))
+	if r1 == 0 {
+		return err
+	}
+	return nil
 }
